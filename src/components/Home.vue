@@ -8,7 +8,7 @@
     <mt-field v-model="inputval.store_name" label="美容院店名" placeholder="请输入美容院店名"></mt-field>
     <mt-field v-model="inputval.name" label="老板名字" placeholder="请输入老板名字" :state="errors.name ? 'error': 'success'"></mt-field>
     <mt-cell title="隶属公司" style="position:relative;">
-      <el-select v-model="inputval.company" placeholder="请选择" style="width:70%;position:absolute;right:0;">
+      <el-select v-model="inputval.company" placeholder="请选择" style="width:70%;position:absolute;right:0;top:.4rem;">
         <el-option v-for="item in options" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
