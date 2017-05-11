@@ -10,33 +10,33 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        tableData: []
-      }
-    },
-    mounted: function() {
-      var _this = this;
-      this.Ajax.post('history', this.Qs.stringify({
-          mobile: _this.Cookie.get('mobile')
-        }))
-        .then(function(response) {
-          var result = response.data;
-          if (result.code == 1) {
-            _this.tableData = result.datas;
-          } else {
-            _this.tableData = [];
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
-    methods: {
-      formatter(row, column) {
-        return row.buy_num + row.unit;
-      }
+export default {
+  data: function () {
+    return {
+      tableData: []
+    }
+  },
+  mounted: function () {
+    var _this = this;
+    this.Ajax.post('history', this.Qs.stringify({
+      mobile: _this.Cookie.get('mobile')
+    }))
+      .then(function (response) {
+        var result = response.data;
+        if (result.code == 1) {
+          _this.tableData = result.datas;
+        } else {
+          _this.tableData = [];
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  },
+  methods: {
+    formatter: function (row, column) {
+      return row.buy_num + row.unit;
     }
   }
+}
 </script>

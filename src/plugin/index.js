@@ -94,26 +94,26 @@ Vue.prototype.Log = function (str) {
 
 //** 正则检测 */
 Vue.prototype.DataCheck = function (type, value) {
-    value = value.replace(/(^\s*)|(\s*$)/g, "");
+    value = (value + "").replace(/(^\s*)|(\s*$)/g, "");
     switch (type) {
-        case "required": return /[^(^\s*)|(\s*$)]/.test(value); break;
-        case "chinese": return /^[\u0391-\uFFE5]+$/.test(value); break;
-        case "number": return /^\d+$/.test(value); break;
-        case "integer": return /^[-\+]?\d+$/.test(value); break;
-        case "plusinteger": return /^[+]?\d+$/.test(value); break;
-        case "double": return /^[-\+]?\d+(\.\d+)?$/.test(value); break;
-        case "plusdouble": return /^[+]?\d+(\.\d+)?$/.test(value); break;
-        case "english": return /^[A-Za-z]+$/.test(value); break;
-        case "username": return /^[a-z]\w{3,}$/i.test(value); break;
-        case "mobile": return /^(1[3|4|5|7|8])+\d{9}?$/.test(value); break;
-        case "phone": return /^((\(\d{2,3}\))|(\d{3}\-))?(\(0\d{2,3}\)|0\d{2,3}-)?[1-9]\d{6,7}(\-\d{1,4})?$/.test(value); break;
-        case "tel": return /^(1[3|4|5|7|8])+\d{9}?$/.test(value) || /^((\(\d{2,3}\))|(\d{3}\-))?(\(0\d{2,3}\)|0\d{2,3}-)?[1-9]\d{6,7}(\-\d{1,4})?$/.test(value); break;
-        case "email": return /^[^@]+@[^@]+\.[^@]+$/.test(value); break;
-        case "url": return /^http:\/\/[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/.test(value); break;
-        case "ip": return /^[\d\.]{7,15}$/.test(value); break;
-        case "qq": return /^[1-9]\d{4,10}$/.test(value); break;
-        case "currency": return /^\d+(\.\d+)?$/.test(value); break;
-        case "zip": return /^[1-9]\d{5}$/.test(value); break;
+        case "required": return /[^(^\s*)|(\s*$)]/.test(value);
+        case "chinese": return /^[\u0391-\uFFE5]+$/.test(value);
+        case "number": return /^\d+$/.test(value);
+        case "integer": return /^[-\+]?\d+$/.test(value);
+        case "plusinteger": return /^[+]?\d+$/.test(value);
+        case "double": return /^[-\+]?\d+(\.\d+)?$/.test(value);
+        case "plusdouble": return /^[+]?\d+(\.\d+)?$/.test(value);
+        case "english": return /^[A-Za-z]+$/.test(value);
+        case "username": return /^[a-z]\w{3,}$/i.test(value);
+        case "mobile": return /^(1[3|4|5|7|8])+\d{9}?$/.test(value);
+        case "phone": return /^((\(\d{2,3}\))|(\d{3}\-))?(\(0\d{2,3}\)|0\d{2,3}-)?[1-9]\d{6,7}(\-\d{1,4})?$/.test(value);
+        case "tel": return /^(1[3|4|5|7|8])+\d{9}?$/.test(value) || /^((\(\d{2,3}\))|(\d{3}\-))?(\(0\d{2,3}\)|0\d{2,3}-)?[1-9]\d{6,7}(\-\d{1,4})?$/.test(value);
+        case "email": return /^[^@]+@[^@]+\.[^@]+$/.test(value);
+        case "url": return /^http:\/\/[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/.test(value);
+        case "ip": return /^[\d\.]{7,15}$/.test(value);
+        case "qq": return /^[1-9]\d{4,10}$/.test(value);
+        case "currency": return /^\d+(\.\d+)?$/.test(value);
+        case "zip": return /^[1-9]\d{5}$/.test(value);
     }
 }
 
