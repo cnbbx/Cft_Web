@@ -1,15 +1,15 @@
 <template>
-  <div class="page-navbar">
+  <div class="page-navbar" v-loading.fullscreen.lock="fullscreenLoading">
     <div style="height:2px;"></div>
     <el-alert title="本人已经确认知晓财富通专柜货品为精品专供，出货不退不换，默认快递方式，所有运费自付！ " type="error"> </el-alert>
     <mt-field v-model="inputval.mobile" label="老板手机号" placeholder="请输入老板手机号" :state="errors.mobile ? 'error': 'success'">
-      <el-button type="primary" icon="time" @click.native="loaddata" :loading="loading"></el-button>
+      <el-button type="primary" icon="time" @click.native="loaddata" :loading="loading">加载数据</el-button>
     </mt-field>
     <mt-field v-model="inputval.store_name" label="美容院店名" placeholder="请输入美容院店名"></mt-field>
     <mt-field v-model="inputval.name" label="老板名字" placeholder="请输入老板名字" :state="errors.name ? 'error': 'success'"></mt-field>
     <mt-cell title="隶属公司" style="position:relative;">
       <el-select v-model="inputval.company" placeholder="请选择" style="width:70%;position:absolute;right:0;top:.4rem;">
-        <el-option v-for="item in options" :label="item.label" :value="item.value">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
     </mt-cell>
@@ -25,26 +25,26 @@
     </mt-navbar>
     <mt-tab-container v-model="inputval.few">
       <mt-tab-container-item id="1">
-        <mt-cell :label="item.boutique_name" v-for="item in inputval.first">
+        <mt-cell :label="item.boutique_name" v-for="item in inputval.first" :key="item.id">
           <el-input-number size="small" v-model="item.num" @change="handleChange" :min="0" :max="500"></el-input-number>&nbsp;
           <span>{{item.unit}}</span>
         </mt-cell>
       </mt-tab-container-item>
       <mt-tab-container-item id="2">
-        <mt-cell :label="item.boutique_name" v-for="item in inputval.second">
+        <mt-cell :label="item.boutique_name" v-for="item in inputval.second" :key="item.id">
           <el-input-number size="small" v-model="item.num" @change="handleChange" :min="0" :max="500"></el-input-number>&nbsp;
           <span>{{item.unit}}</span>
         </mt-cell>
       </mt-tab-container-item>
       <mt-tab-container-item id="3">
-        <mt-cell :label="item.boutique_name" v-for="item in inputval.third">
+        <mt-cell :label="item.boutique_name" v-for="item in inputval.third" :key="item.id">
           <el-input-number size="small" v-model="item.num" @change="handleChange" :min="0" :max="500"></el-input-number>&nbsp;
           <span>{{item.unit}}</span>
         </mt-cell>
       </mt-tab-container-item>
     </mt-tab-container>
     <mt-field v-model="inputval.remark" label="备注" placeholder="请输入备注" type="textarea" rows="4" style="border:1px solid #efefef"></mt-field>
-    <mt-button size="large" type="danger" @click.native="sendpost">提交</mt-button>
+    <mt-button size="large" type="danger" @click.native="sendpost" :disabled="issubmit">提交</mt-button>
   </div>
 </template>
 
@@ -64,6 +64,8 @@ export default {
   },
   data: function () {
     return {
+      fullscreenLoading: false,
+      issubmit: false,
       loading: false,
       address: '北京-北京市-东城区',
       showAddressPicker: false,
@@ -162,6 +164,7 @@ export default {
     sendpost: function () {
       // @TODO 保存出货记录
       var _this = this;
+      _this.issubmit = true;
       var _address = _this.inputval.commodity_address;
       _this.inputval.commodity_address = _this.address + '-' + _address;
       var IsSub = true;
@@ -188,7 +191,11 @@ export default {
         IsSub = true;
       });
       // 检测结束
-      if (IsSub)
+      if (IsSub) {
+        _this.fullscreenLoading = true;
+        setTimeout(function () {
+          _this.fullscreenLoading = false;
+        }, 5000);
         _this.Ajax.post('save', _this.Qs.stringify(_this.inputval))
           .then(function (response) {
             var result = response.data;
@@ -201,14 +208,20 @@ export default {
               setTimeout(function () {
                 location.href = "#/history";
               }, 1000);
+              _this.fullscreenLoading = false;
             } else {
               _this.$message.error('提交发货信息失败！');
+              _this.issubmit = false;
             }
           })
           .catch(function (error) {
             console.log(error);
           });
+      }
       this.inputval.commodity_address = _address;
+      setTimeout(function () {
+        _this.issubmit = false;
+      }, 3000);
     },
     loaddata: function () {
       // @TODO 获取老板上一次出货记录
