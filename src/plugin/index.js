@@ -119,5 +119,6 @@ Vue.prototype.DataCheck = function (type, value) {
 
 //** 检测表单数据 */
 Vue.prototype.CheckStr = function (type, value, error, success) {
+    console.log(this.DataCheck(type, value));
     if (this.DataCheck(type, value)) { if (typeof success === 'function') success.call(); } else { if (typeof error === 'function') error.call(); }
 }
