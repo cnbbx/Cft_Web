@@ -7,6 +7,7 @@
         </mt-field>
 
         <el-table :data="tableData" :default-sort="{prop: 'date', order: 'descending'}">
+            <el-table-column prop="ordercode" label="订单号"></el-table-column>
             <el-table-column prop="username" label="姓名"></el-table-column>
             <el-table-column prop="cft" label="第几代" :formatter="cft_formatter"></el-table-column>
             <el-table-column prop="commodity_time" label="日期" sortable></el-table-column>

@@ -5,25 +5,10 @@
         <div>
             
             <!-- 店铺编号 -->
-            <mt-field v-model="storeno" label="店铺编号" placeholder="请输入店铺编号"></mt-field>
-            <!-- 精品 -->
-            <mt-cell title="精品名称" style="position:relative;">
-                <el-select v-model="goodsName" placeholder="请选择" style="width:70%;position:absolute;right:0;top:.4rem;">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                </el-select>
-            </mt-cell>
-            <!-- 日期 -->
-            <!--<mt-field v-model="goodsName" label="发货日期" placeholder="请输入发货日期"></mt-field>-->
-            <!--<mt-field label="选择日期">-->
-            <span style="padding: 0 28px 0 10px;">选择日期</span>
-            <el-date-picker
-                v-model="value2"
-                type="date"
-                placeholder="选择日期"
-                :picker-options="pickerOptions1">
-            </el-date-picker>
+            <mt-field v-model="orderCode" label="订单编号" placeholder="请输入订单编号+商品ID"></mt-field>
+            
             <!-- 单号 -->
-            <mt-field v-model="orderCode" label="快递单号" placeholder="请输入快递单号"></mt-field>
+            <mt-field v-model="expressno" label="快递单号" placeholder="请输入快递单号"></mt-field>
 
             <mt-button size="large" type="danger" @click.native="inputOrder">录入</mt-button>
 
@@ -43,7 +28,7 @@ body { margin-top: 45px;}
             return {
                 orderCode: '',
                 goodsName: '',
-                storeno: '',
+                expressno: '',
                 value2: '',
                 options: [{
                     value: '1',
@@ -84,7 +69,7 @@ body { margin-top: 45px;}
             // 单号录入
             inputOrder: function(){
                 var _this = this;
-                this.Ajax.post('inputOrder', {order: _this.orderCode, goodsName: _this.goodsName, storeno: _this.storeno})
+                this.Ajax.post('/inputorder/', _this.Qs.stringify({ordercode: _this.orderCode, expressno: _this.expressno}))
                 .then(function(response) {
                     var result = response.data;
                     if (result.code == 1) {
