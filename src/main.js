@@ -17,3 +17,6 @@ Vue.use(ElementUI)
 new Vue({
     el: '#app', router, template: '<App/>', components: { App }
 })
+
+Vue.config.devtools = false
+Vue.config.productionTip = false
