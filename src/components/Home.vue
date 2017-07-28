@@ -71,6 +71,7 @@
         <mt-field v-model="inputval.remark" label="备注" placeholder="请输入备注" type="textarea" rows="4" style="border:1px solid #efefef"></mt-field>
     
         <mt-button size="large" type="danger" @click.native="showData" :disabled="issubmit">确认</mt-button>
+
         <div class="showData" v-if="showPop">
             <div class="mask"></div>
             <div class="content">
@@ -90,6 +91,7 @@
                         <span>{{item.num}}</span>&nbsp;
                         <span>{{item.unit}}</span>
                     </mt-cell>
+                    <div class="auth"><span>短信验证码：</span><input type="text" placeholder="请输入短信验证码" v-model="inputval.captcha"></div>
                 </div>
                 <div class="tijiao">
                     <mt-button size="large" type="danger" @click.native="sendpost" :disabled="issubmit">提交</mt-button>
@@ -102,85 +104,89 @@
 </template>
 
 <style>
-.showData {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
+    .showData {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
 
-.showData .mask {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, .1);
-    z-index: 1;
-}
+    .showData .mask {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, .1);
+        z-index: 1;
+    }
 
-.showData .content {
-    background: #fff;
-    z-index: 99;
-    width: 90%;
-    margin: auto;
-    border-radius: 5px;
-    position: relative;
-    height: 400px;
-    padding-top: 1px;
-    margin-top: calc((100vh - 400px)/2)
-}
+    .showData .content {
+        background: #fff;
+        z-index: 99;
+        width: 90%;
+        margin: auto;
+        border-radius: 5px;
+        position: relative;
+        height: 400px;
+        padding-top: 1px;
+        margin-top: calc((100vh - 400px)/2)
+    }
 
-.showData .content .title {
-    text-align: center;
-    margin: 10px 0;
-}
+    .showData .content .title {
+        text-align: center;
+        margin: 10px 0;
+    }
 
-.showData .content .deInfo {
-    margin: 0 10px;
-}
+    .showData .content .deInfo {
+        margin: 0 10px;
+    }
 
-.showData .content .list {
-    height: 240px;
-    overflow-y: auto;
-}
+    .showData .content .list {
+        height: 240px;
+        overflow-y: auto;
+    }
 
-.showData .content .tijiao {
-    margin: 20px auto;
-    width: 90%;
-}
+    .showData .content .tijiao {
+        margin: 20px auto;
+        width: 90%;
+    }
 
-.showData .content .tijiao button {
-    margin: 0 10px;
-    width: 40%;
-    display: inline-block;
-}
+    .showData .content .tijiao button {
+        margin: 0 10px;
+        width: 40%;
+        display: inline-block;
+    }
 
-.mint-tab-container {
-    margin: 0.1em 0em;
-}
+    .mint-tab-container {
+        margin: 0.1em 0em;
+    }
 
-.el-notification.jinge {
-    top: 200px!important;
-}
+    .el-notification.jinge {
+        top: 200px!important;
+    }
 
-.jinge .el-notification__icon {
-    font-size: 60px;
-    width: 60px;
-    height: 60px;
-}
+    .jinge .el-notification__icon {
+        font-size: 60px;
+        width: 60px;
+        height: 60px;
+    }
 
-.jinge .el-notification__group.is-with-icon {
-    margin-left: 70px;
-}
+    .jinge .el-notification__group.is-with-icon {
+        margin-left: 70px;
+    }
 
-.jinge .el-notification__group .el-notification__title,
-.jinge .el-notification__group .el-notification__content {
-    font-size: 30px;
-    line-height: 30px;
-}
+    .jinge .el-notification__group .el-notification__title,
+    .jinge .el-notification__group .el-notification__content {
+        font-size: 30px;
+        line-height: 30px;
+    }
+    .auth {
+        padding: 0 10px;
+        font-size: 14px;
+    }
 </style>
 
 <script>
@@ -250,6 +256,7 @@ export default {
                 commodity_mobile: '',
                 commodity_address: '',
                 commodity_address_bak: '',
+                captcha: '',
                 first: [],
                 second: [],
                 third: []
@@ -374,8 +381,21 @@ export default {
 
             // 检测结束
             if (IsSub) {
-                _this.issubmit = false;
-                _this.showPop = true;
+                _this.Ajax.post('sendsms', _this.Qs.stringify({mobile: _this.inputval.mobile})).then(
+                    function(res){
+                        if(res.code == 0){
+                            _this.$notify.success({
+                                title: '消息',
+                                message: '短信验证码发送失败',
+                                offset: 300,
+                                customClass: 'jinge'
+                            });
+                        }else{
+                            _this.issubmit = false;
+                            _this.showPop = true;
+                        }
+                    }
+                );
             } else {
                 setTimeout(function () {
                     _this.issubmit = false;
@@ -387,6 +407,15 @@ export default {
         },
         sendpost: function () {
             var _this = this;
+            if(!_this.inputval.captcha){
+                _this.$notify.success({
+                    title: '消息',
+                    message: '请填写短信验证码',
+                    offset: 300,
+                    customClass: 'jinge'
+                });
+                return false;
+            }
             _this.fullscreenLoading = true;
             setTimeout(function () {
                 _this.fullscreenLoading = false;
@@ -418,6 +447,9 @@ export default {
                             _this.issubmit = false;
                         } else if (result.msg == 92) {
                             _this.$message.error('您没有参与三代精品，请您联系您的服务老师！');
+                            _this.issubmit = false;
+                        } else if(result.msg == 101){
+                            _this.$message.error('短信验证码填写错误，请确认后重新填写！');
                             _this.issubmit = false;
                         } else {
                             _this.$message.error('提交发货信息失败！');
