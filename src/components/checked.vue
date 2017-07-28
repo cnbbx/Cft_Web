@@ -4,7 +4,7 @@
         <div style="height:2px;"></div>
         <div class="checked_tab">
             <span :class="ind == 1 ? 'curr' : ''" data-ind="1" @click="changes">门店编码查询</span>
-            <span :class="ind == 2 ? 'curr' : ''" data-ind="2" @click="changes">本月精品快递查询</span>
+            <span :class="ind == 2 ? 'curr' : ''" data-ind="2" @click="changes">精品快递查询</span>
         </div>
     
         <div v-if="ind == 1">
@@ -17,8 +17,12 @@
             <mt-button size="large" type="danger" @click.native="showData">查询</mt-button>
     
             <!-- 手机号 -->
-            <div v-if="showCode" class="bot">
-                <mt-field v-model="storeno" label="门店编码为：" readonly></mt-field>
+            <div v-if="showCode">
+                <div style="height:8px;"></div>
+                <el-table :data="itemList" :default-sort="{prop: 'date', order: 'descending'}">
+                    <el-table-column prop="storeno" label="店铺编号"></el-table-column>
+                    <el-table-column prop="storename" label="店铺名称"></el-table-column>
+                </el-table>
             </div>
             <p class="tip">点击
                 <router-link to="/history">历史订单</router-link> ， 进入出货系统历史查询</p>
@@ -27,7 +31,7 @@
         <div v-if="ind == 2">
             <!--<mt-header title="本月精品快递查询" style="margin-top: 30px;"></mt-header>-->
             <!-- 第几公司 -->
-            <mt-field v-model="store_code" label="门店编码" placeholder="请输入门店编码"></mt-field>
+            <mt-field v-model="storeno" label="门店编码" placeholder="请输入门店编码"></mt-field>
     
             <mt-button size="large" type="danger" @click.native="showOrder">查询</mt-button>
             <div v-if="orderData">
@@ -98,7 +102,7 @@ export default {
     data: function () {
         return {
             ind: 1,
-            storeno: '',
+            storeno: this.Cookie.get('storeno'),
             store_code: '',
             company: '',
             user_name: '',
@@ -149,7 +153,7 @@ export default {
                     var result = response.data;
                     if (result.code == 1) {
                         _this.showCode = true;
-                        _this.storeno = result.datas.storeno;
+                        _this.itemList = result.datas;
                     } else {
                         _this.showCode = false;
                         _this.storeno = '';
@@ -164,7 +168,7 @@ export default {
         showOrder: function () {
             var _this = this;
             _this.orderData = true;
-            _this.Ajax.post('express', this.Qs.stringify({ storeno: _this.store_code }))
+            _this.Ajax.post('express', this.Qs.stringify({ storeno: _this.storeno }))
                 .then(function (response) {
                     var result = response.data;
                     if (result.code == 1) {

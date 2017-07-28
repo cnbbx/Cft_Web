@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import _header from './header.vue'
+import _header from './header2.vue'
 
     export default {
         data: function() {

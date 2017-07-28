@@ -70,7 +70,7 @@
         <!-- 备注 -->
         <mt-field v-model="inputval.remark" label="备注" placeholder="请输入备注" type="textarea" rows="4" style="border:1px solid #efefef"></mt-field>
     
-        <mt-button size="large" type="danger" @click.native="showData" :disabled="issubmit">确认</mt-button>
+        <mt-button size="large" type="danger" @click.native="showData" :disabled="issubmit">提交</mt-button>
 
         <div class="showData" v-if="showPop">
             <div class="mask"></div>
@@ -93,8 +93,9 @@
                     </mt-cell>
                     <div class="auth"><span>短信验证码：</span><input type="text" placeholder="请输入短信验证码" v-model="inputval.captcha"></div>
                 </div>
+                <el-alert title="本人已经确认知晓财富通专柜货品为精品专供，出货不退不换，默认快递方式，所有运费自付！ " type="error"> </el-alert>
                 <div class="tijiao">
-                    <mt-button size="large" type="danger" @click.native="sendpost" :disabled="issubmit">提交</mt-button>
+                    <mt-button size="large" type="danger" @click.native="sendpost" :disabled="issubmit">确认</mt-button>
                     <mt-button size="large" type="danger" @click.native="cancel" :disabled="issubmit">取消</mt-button>
                 </div>
             </div>
@@ -130,7 +131,7 @@
         margin: auto;
         border-radius: 5px;
         position: relative;
-        height: 400px;
+        height: 448px;
         padding-top: 1px;
         margin-top: calc((100vh - 400px)/2)
     }
@@ -191,7 +192,7 @@
 
 <script>
 import MyAddress from '../plugin/address-picker/Address.vue'
-import _header from './header.vue'
+import _header from './header2.vue'
 
 export default {
     name: 'page-navbar',
@@ -245,7 +246,7 @@ export default {
                 commodity_address_bak: ''
             },
             inputval: {
-                storeno: '',
+                storeno: this.Cookie.get('storeno'),
                 name: '',
                 mobile: this.Cookie.get('mobile'),
                 company: '',
@@ -298,7 +299,10 @@ export default {
                             _this.inputval.store_name = result.datas.store_name;
                             _this.inputval.name = result.datas.name;
                             _this.nowrite = false;
-
+                            _this.inputval.commodity_name = result.datas.commodity_name;
+                            _this.inputval.commodity_mobile = result.datas.commodity_mobile;
+                            _this.address = result.datas.commodity_address.split("-", 3).join('-');
+                            _this.inputval.commodity_address_bak = result.datas.commodity_address.replace(result.datas.commodity_address.split("-", 3).join('-') + '-', '');
                             _this.$notify.success({
                                 title: '消息',
                                 message: '信息获取成功！',
